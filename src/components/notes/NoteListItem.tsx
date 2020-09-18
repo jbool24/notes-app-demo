@@ -1,14 +1,6 @@
 import * as React from "react";
-
-export interface Note {
-  id: string;
-  title: string;
-  note_body: string;
-  created_at: string;
-  department: string;
-  department_role: string;
-  reviewed: boolean;
-}
+import { Link } from "react-router-dom";
+import { Note } from "./notes.d";
 
 interface NoteProps {
   note: Note;
@@ -19,8 +11,8 @@ export const NoteListItem: React.FC<NoteProps> = ({ note }): JSX.Element => {
 
   return (
     <li className="border-t border-gray-300">
-      <a
-        href="#"
+      <Link
+        to={`/notes/${note.id}`}
         className="block hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition duration-150 ease-in-out"
       >
         <div className="px-4 py-4 sm:px-6">
@@ -78,7 +70,7 @@ export const NoteListItem: React.FC<NoteProps> = ({ note }): JSX.Element => {
             </div>
           </div>
         </div>
-      </a>
+      </Link>
     </li>
   );
 };

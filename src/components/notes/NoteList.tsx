@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Note, NoteListItem } from "./NoteListItem";
+import { Note, NoteListItem } from "./";
 
 interface PropList {
   notes: Array<Note>;
