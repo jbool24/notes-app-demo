@@ -1,11 +1,23 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 
-const ENV_OR_DEFAULT =
-  process.env.GRAPHQL_ENDPOINT ||
-  "https://siteform-notes.herokuapp.com/v1/graphql";
+const httpLink = createHttpLink({
+  uri: process.env.REACT_APP_GRAPHQL_ENDPOINT
+});
+
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem("token");
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+      "x-hasura-admin-secret": process.env.REACT_APP_GRAPHQL_SECRET
+    }
+  };
+});
 
 const client = new ApolloClient({
-  uri: ENV_OR_DEFAULT,
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache()
 });
 
