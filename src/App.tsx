@@ -10,7 +10,7 @@ function App() {
   return (
     <ApolloProvider client={Client}>
       <DefaultLayout>
-        <div className="py-2 bg-white rounded-lg shadow-lg h-64">
+        <div className="py-2 bg-white rounded-lg shadow-lg h-full">
           <NotePage />
         </div>
       </DefaultLayout>
