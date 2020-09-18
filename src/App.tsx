@@ -10,7 +10,7 @@ function App() {
     <ApolloProvider client={Client}>
       <DefaultLayout>
         <div>
-          <h2>Apollo app 🚀</h2>
+          <h2 className="text-4xl">Apollo app 🚀</h2>
         </div>
       </DefaultLayout>
     </ApolloProvider>
