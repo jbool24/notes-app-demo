@@ -1,55 +1,92 @@
-import * as React from "react";
-import { useQuery, gql } from "@apollo/client";
+import React, { useState } from "react";
+import { useQuery, useMutation, gql } from "@apollo/client";
 import {
   useParams,
   useRouteMatch,
+  useHistory,
   Switch,
   Route,
   Link
 } from "react-router-dom";
 
-import { Note, Department } from "./";
+import { Note, Department } from "../notes";
 
 const ALL_DEPARTMENTS_QUERY = gql`
-  query allDepartmentsQuery {
+  query Departments {
     departments {
       id
-      department_name
+      name
     }
   }
 `;
 
-interface NoteCardProps {
-  notes: Array<Note>;
-}
+const NOTE_BY_ID_QUERY = gql`
+  query Note($noteId: uuid!) {
+    notes(where: { id: { _eq: $noteId } }) {
+      id
+      title
+      created_at
+      author {
+        id
+        name
+        email
+      }
+      note_body
+      reviewed
+      department_role
+      department {
+        id
+        name
+      }
+    }
+  }
+`;
 
-export function NoteCard(props: NoteCardProps): JSX.Element {
-  const { noteId } = useParams();
+const UPDATE_NOTE_MUTATION = gql`
+  mutation updateNote($id: uuid!, $noteBody: String, $departmentId: uuid) {
+    update_notes_by_pk(
+      pk_columns: { id: $id }
+      _set: { note_body: $noteBody, department_id: $departmentId }
+    ) {
+      department_id
+      modified_at
+      note_body
+    }
+  }
+`;
+
+export default function NoteCard(): JSX.Element {
   const match = useRouteMatch();
-  const note = props.notes.find(note => note.id === noteId);
-  console.log(note);
+  const { noteId } = useParams();
 
-  if (!note) return <h1> Note note foundM</h1>;
-  else
-    return (
-      <Switch>
-        <Route path={`${match.url}/edit`}>
-          <EditableNoteCard note={note} />
-        </Route>
-        <Route path={match.url}>
-          <ReadOnlyNoteCard note={note} />
-        </Route>
-      </Switch>
-    );
+  const { loading, error, data } = useQuery(NOTE_BY_ID_QUERY, {
+    variables: { noteId: noteId }
+  });
+
+  // Some Server Error
+  if (error) {
+    return <h1 className="w-full text-center"> Note note found!</h1>;
+  }
+
+  return loading ? (
+    <h1 className="w-full text-center"> Loading Note</h1>
+  ) : (
+    <Switch>
+      <Route path={`${match.url}/edit`}>
+        <EditableNoteCard note={data.notes[0]} />
+      </Route>
+      <Route path={match.url}>
+        <ReadOnlyNoteCard note={data.notes[0]} />
+      </Route>
+    </Switch>
+  );
 }
 
-interface NoteCardProps {
+interface NoteProps {
   note: Note;
 }
 
-function ReadOnlyNoteCard({
-  note: { department, note_body }
-}: NoteCardProps): JSX.Element {
+function ReadOnlyNoteCard({ note }: NoteProps): JSX.Element {
   const match = useRouteMatch();
   return (
     <div className="bg-white overow-hidden sm:rounded-lg">
@@ -80,15 +117,7 @@ function ReadOnlyNoteCard({
               Full name
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900">
-              Margot Foster
-            </dd>
-          </div>
-          <div className="sm:col-span-1">
-            <dt className="text-sm leading-5 font-medium text-gray-500">
-              Department
-            </dt>
-            <dd className="mt-1 text-sm leading-5 text-gray-900">
-              {department}
+              {note.author.name}
             </dd>
           </div>
           <div className="sm:col-span-1">
@@ -96,15 +125,24 @@ function ReadOnlyNoteCard({
               Email address
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900">
-              margotfoster@example.com
+              {note.author.email}
             </dd>
           </div>
-          <div className="sm:col-span-2">
+          <div className="sm:col-span-1">
             <dt className="text-sm leading-5 font-medium text-gray-500">
-              About
+              Department
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900">
-              {note_body}
+              {note.department.name}
+            </dd>
+          </div>
+
+          <div className="sm:col-span-2">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              Note
+            </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900">
+              {note.note_body}
             </dd>
           </div>
         </dl>
@@ -113,43 +151,125 @@ function ReadOnlyNoteCard({
   );
 }
 
-function DepartmentsDropdown(): JSX.Element {
-  const { loading, data } = useQuery(ALL_DEPARTMENTS_QUERY);
-  if (loading)
-    return (
-      <select disabled>
-        <option>Loading...</option>
-      </select>
-    );
-  else
-    return (
-      <select>
-        {data.departments.map(
-          (department: Department): JSX.Element => (
-            <option key="department.id">department.department_name</option>
-          )
-        )}
-      </select>
-    );
+interface DropDownProps {
+  selected: Department;
+  departments: Array<Department>;
+  onUpdate(d: Department): void;
 }
-
-function EditableNoteCard({ note }: NoteCardProps): JSX.Element {
-  const noteData: Note = {
-    id: note.id || "",
-    title: note.title || "",
-    note_body: note.note_body || "",
-    department: note.department || {},
-    department_role: note.department_role || "",
-    created_at: note.created_at || "",
-    reviewed: note.reviewed || false
-  };
-
-  const valueChanged = (event: { target: HTMLInputElement }) => {
-    console.log("Heard Value Change");
-    console.log(event);
+function DepartmentsDropdown({
+  selected,
+  departments,
+  onUpdate
+}: DropDownProps) {
+  const handleChange = (event: { target: HTMLSelectElement }) => {
+    const selected = departments.find((d: any) => event.target.value === d.id);
+    if (selected) onUpdate(selected);
   };
 
   return (
+    <select
+      value={selected.id}
+      onChange={handleChange}
+      className="w-full h-full px-2 py-1 bg-white border border-gray-400"
+    >
+      {departments.map((d: Department) => {
+        return (
+          <option key={d.id} value={d.id}>
+            {d.name}
+          </option>
+        );
+      })}
+    </select>
+  );
+}
+
+function EditableNoteCard({ note }: NoteProps): JSX.Element {
+  const router = useHistory();
+  const [noteData, setNoteData] = useState(note);
+  const { loading: queryLoading, error: queryError, data } = useQuery(
+    ALL_DEPARTMENTS_QUERY
+  );
+  const [
+    updateNote,
+    { loading: mutationLoading, error: mutationError }
+  ] = useMutation(UPDATE_NOTE_MUTATION);
+
+  const DropDown = () => {
+    if (queryError) {
+      return (
+        <select disabled>
+          <option>Error</option>
+        </select>
+      );
+    }
+
+    if (queryLoading) {
+      return (
+        <select disabled>
+          <option>Loading...</option>
+        </select>
+      );
+    } else {
+      return (
+        <DepartmentsDropdown
+          selected={noteData.department}
+          departments={data.departments}
+          onUpdate={updateDepartment}
+        />
+      );
+    }
+  };
+
+  // const successCB = data => router.push(`/notes/${data.notes.id}`);
+
+  const handleSubmit = async () => {
+    console.table(noteData);
+    // validate
+    router.push(`/notes/${noteData.id}`);
+    // submit
+    try {
+      await updateNote({
+        variables: {
+          id: noteData.id,
+          noteBody: noteData.note_body,
+          departmentId: noteData.department.id
+        }
+      });
+    } catch (error) {
+      // rollback on errors
+      console.error(`JB ERROR: ${error}`);
+    }
+  };
+  const updateNoteText = (event: any) => {
+    setNoteData({ ...noteData, note_body: event.target.value });
+  };
+
+  const updateDepartment = (department: Department) => {
+    setNoteData({ ...noteData, department: department });
+  };
+
+  const handleUpdateAuthorEmail = (event: any) => {
+    console.log(event.target.id);
+    setNoteData({
+      ...noteData,
+      author: { ...noteData.author, email: event.target.value }
+    });
+  };
+  const handleUpdateAuthorName = (event: any) => {
+    console.log(event.target.id);
+    setNoteData({
+      ...noteData,
+      author: { ...noteData.author, name: event.target.value }
+    });
+  };
+  const handleUpdateInput = (event: any) => {
+    console.log(event.target.id);
+    // setNoteData({...noteData, noteDate[eve]})
+  };
+
+  return mutationLoading ? (
+    <div>Loading...</div>
+  ) : (
     <div className="bg-white overflow-hidden sm:rounded-lg">
       <div className="px-4 py-5 border-b border-gray-200 sm:px-6">
         <div className="flex justify-betwen">
@@ -162,7 +282,10 @@ function EditableNoteCard({ note }: NoteCardProps): JSX.Element {
             </p>
           </div>
           <div>
-            <button className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700">
+            <button
+              onClick={handleSubmit}
+              className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700"
+            >
               Save
             </button>
           </div>
@@ -176,10 +299,26 @@ function EditableNoteCard({ note }: NoteCardProps): JSX.Element {
             </dt>
             <dd>
               <input
-                id="author"
+                id="author.name"
+                value={noteData.author.name}
+                onChange={handleUpdateAuthorName}
                 className="w-full px-2 py-1 mt-1 text-sm leading-5 text-gray-900 border border-gray-400 shadow-inner"
                 placeholder="John Smith"
-                value={noteData.title}
+              />
+            </dd>
+          </div>
+
+          <div className="sm:col-span-1">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              Email address
+            </dt>
+            <dd>
+              <input
+                id="author.email"
+                value={noteData.author.email}
+                onChange={handleUpdateAuthorEmail}
+                className="w-full px-2 py-1 mt-1 text-sm leading-5 text-gray-900 border border-gray-400 shadow-inner"
+                placeholder="john.smith@example.com"
               />
             </dd>
           </div>
@@ -187,20 +326,8 @@ function EditableNoteCard({ note }: NoteCardProps): JSX.Element {
             <dt className="text-sm leading-5 font-medium text-gray-500">
               Department
             </dt>
-            <dd>
-              <DepartmentsDropdown onChange={valueChanged} />
-            </dd>
-          </div>
-          <div className="sm:col-span-1">
-            <dt className="text-sm leading-5 font-medium text-gray-500">
-              Email address
-            </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900">
-              <input
-                id="author"
-                className="w-full px-2 py-1 mt-1 text-sm leading-5 text-gray-900 border border-gray-400 shadow-inner"
-                placeholder="john.smith@example.com"
-              />
+              <DropDown />
             </dd>
           </div>
           <div className="sm:col-span-2">
@@ -208,10 +335,12 @@ function EditableNoteCard({ note }: NoteCardProps): JSX.Element {
               Note
             </dt>
             <dd className="mt-1 tex-sm leading-5 text-gray-900">
-              <input
-                id="author"
-                type="textarea"
-                className="w-full px-2 py-1 mt-1 text-sm leading-5 text-gray-900 border border-gray-400 shadow-inner "
+              <textarea
+                id="noteText"
+                value={noteData.note_body}
+                onChange={updateNoteText}
+                className="w-full px-2 py-1 mt-1 text-sm leading-5 text-gray-900 border border-gray-400 shadow-inner"
+                style={{ minHeight: "120px" }}
               />
             </dd>
           </div>
