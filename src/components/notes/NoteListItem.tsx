@@ -1,14 +1,12 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
-import { Note } from "./notes.d";
+import { Note } from "../notes";
 
 interface NoteProps {
   note: Note;
 }
 
-export const NoteListItem: React.FC<NoteProps> = ({ note }): JSX.Element => {
-  console.log(note.created_at);
-
+export default function NoteListItem({ note }: NoteProps): JSX.Element {
   return (
     <li className="border-t border-gray-300">
       <Link
@@ -43,7 +41,7 @@ export const NoteListItem: React.FC<NoteProps> = ({ note }): JSX.Element => {
                 >
                   <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                 </svg>
-                {note.department}
+                {note.department.name}
               </div>
             </div>
             <div className="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mt-0">
@@ -73,4 +71,4 @@ export const NoteListItem: React.FC<NoteProps> = ({ note }): JSX.Element => {
       </Link>
     </li>
   );
-};
+}

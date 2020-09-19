@@ -1,11 +1,11 @@
 import * as React from "react";
-import { Note, NoteListItem } from "./";
+import { Note, NoteListItem } from "../notes";
 
 interface PropList {
   notes: Array<Note>;
 }
 
-export function NoteList(props: PropList): JSX.Element {
+export default function NoteList(props: PropList): JSX.Element {
   return (
     <div>
       <div className="bg-white px-4 py-5 border-b border-gray-200 sm:px-6">
