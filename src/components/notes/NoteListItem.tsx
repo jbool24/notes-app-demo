@@ -1,16 +1,16 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
-import { Note } from "../notes";
+import { NoteData } from "../notes";
 
 interface NoteProps {
-  note: Note;
+  note: NoteData;
 }
 
 export default function NoteListItem({ note }: NoteProps): JSX.Element {
   return (
     <li className="border-t border-gray-300">
       <Link
-        to={`/notes/${note.id}`}
+        to={`/notes/note/${note.id}`}
         className="block hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition duration-150 ease-in-out"
       >
         <div className="px-4 py-4 sm:px-6">

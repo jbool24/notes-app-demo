@@ -1,11 +1,13 @@
 import * as React from "react";
-import { Note, NoteListItem } from "../notes";
+import { useHistory } from "react-router-dom";
+import { NoteData, NoteListItem } from "../notes";
 
 interface PropList {
-  notes: Array<Note>;
+  notes: Array<NoteData>;
 }
 
 export default function NoteList(props: PropList): JSX.Element {
+  const router = useHistory();
   return (
     <div>
       <div className="bg-white px-4 py-5 border-b border-gray-200 sm:px-6">
@@ -19,6 +21,7 @@ export default function NoteList(props: PropList): JSX.Element {
             <span className="inline-flex rounded-md shadow-sm">
               <button
                 type="button"
+                onClick={() => router.push("/notes/new")}
                 className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700"
               >
                 New Note
