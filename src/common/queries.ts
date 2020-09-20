@@ -1,0 +1,81 @@
+import { gql } from "@apollo/client";
+
+export const ALL_DEPARTMENTS_QUERY = gql`
+  query Departments {
+    departments {
+      id
+      name
+    }
+  }
+`;
+
+export const NOTE_BY_ID_QUERY = gql`
+  query Note($noteId: uuid!) {
+    notes(where: { id: { _eq: $noteId } }) {
+      id
+      title
+      created_at
+      author {
+        id
+        name
+        email
+      }
+      note_body
+      reviewed
+      department_role
+      department {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const UPDATE_NOTE_MUTATION = gql`
+  mutation updateNote($id: uuid!, $noteBody: String, $departmentId: uuid) {
+    update_notes_by_pk(
+      pk_columns: { id: $id }
+      _set: { note_body: $noteBody, department_id: $departmentId }
+    ) {
+      id
+      department {
+        id
+        name
+      }
+      note_body
+    }
+  }
+`;
+
+export const INSERT_NOTE_MUTATION = gql`
+  mutation insertNote(
+    $title: String!
+    $noteBody: String
+    $createdBy: uuid!
+    $departmentId: uuid
+  ) {
+    insert_notes_one(
+      object: {
+        title: $title
+        note_body: $noteBody
+        department_id: $departmentId
+        created_by: $createdBy
+      }
+    ) {
+      id
+      title
+      note_body
+      created_at
+      department {
+        id
+        name
+      }
+    }
+  }
+`;
+
+// export default {
+//   ALL_DEPARTMENTS_QUERY,
+//   NOTE_BY_ID_QUERY,
+//   UPDATE_NOTE_MUTATION
+// };
