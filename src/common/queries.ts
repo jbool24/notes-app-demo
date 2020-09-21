@@ -9,6 +9,38 @@ export const ALL_DEPARTMENTS_QUERY = gql`
   }
 `;
 
+export const ALL_NOTES_QUERY = gql`
+  query AllNotesQuery {
+    notes {
+      id
+      title
+      created_at
+      reviewed
+      department_role
+      department {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const SUBSCRIBE_TO_NOTES = gql`
+  subscription {
+    notes {
+      id
+      title
+      created_at
+      reviewed
+      department_role
+      department {
+        id
+        name
+      }
+    }
+  }
+`;
+
 export const NOTE_BY_ID_QUERY = gql`
   query Note($noteId: uuid!) {
     notes(where: { id: { _eq: $noteId } }) {
@@ -17,6 +49,7 @@ export const NOTE_BY_ID_QUERY = gql`
       created_at
       author {
         id
+        user_id
         name
         email
       }
@@ -51,7 +84,7 @@ export const INSERT_NOTE_MUTATION = gql`
   mutation insertNote(
     $title: String!
     $noteBody: String
-    $createdBy: uuid!
+    $createdBy: String!
     $departmentId: uuid
   ) {
     insert_notes_one(

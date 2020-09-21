@@ -1,30 +1,18 @@
 import * as React from "react";
-import { Switch, Route } from "react-router-dom";
-import { useQuery, gql } from "@apollo/client";
+import { Switch, Route, useHistory } from "react-router-dom";
+import { useQuery } from "@apollo/client";
 
+// import { useSubscription } from "@apollo/react-hooks";
 import { NoteList, NoteDetails, NewNoteCard } from "../components/notes";
 
-const ALL_NOTES_QUERY = gql`
-  query AllNotesQuery {
-    notes {
-      id
-      title
-      created_at
-      reviewed
-      department_role
-      department {
-        id
-        name
-      }
-    }
-  }
-`;
+import { ALL_NOTES_QUERY, SUBSCRIBE_TO_NOTES } from "../common/queries";
 
 export default function NotesPage() {
   const { loading, data, error } = useQuery(ALL_NOTES_QUERY);
 
   if (error) {
-    console.error(error);
+    console.error(error.message);
+
     return (
       <div className="py-2 bg-white rounded-lg shadow-lg h-full">
         <h1 className="text-center text-gray-600 text-2xl py-4 h-20">
