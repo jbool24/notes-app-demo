@@ -107,6 +107,13 @@ export const INSERT_NOTE_MUTATION = gql`
   }
 `;
 
+export const REMOVE_NOTE_MUTATION = gql`
+  mutation removeNote($id: uuid!) {
+    delete_notes_by_pk(id: $id) {
+      id
+    }
+  }
+`;
 // export default {
 //   ALL_DEPARTMENTS_QUERY,
 //   NOTE_BY_ID_QUERY,
