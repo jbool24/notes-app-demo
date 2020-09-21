@@ -60,13 +60,20 @@ export default function NoteReadOnly({ note }: NoteProps): JSX.Element {
           </div>
           <div className="sm:col-span-1">
             <dt className="text-sm leading-5 font-medium text-gray-500">
+              Title
+            </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900">
+              {note.title}
+            </dd>
+          </div>
+          <div className="sm:col-span-1">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
               Department
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900">
               {note.department.name}
             </dd>
           </div>
-
           <div className="sm:col-span-2">
             <dt className="text-sm leading-5 font-medium text-gray-500">
               Note

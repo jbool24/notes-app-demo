@@ -60,14 +60,19 @@ export default function NoteEditable({ note }: NoteProps): JSX.Element {
       await updateNote({
         variables: {
           id: noteData.id,
+          title: noteData.title,
           noteBody: noteData.note_body,
           departmentId: noteData.department.id
         }
       });
       router.push(`/notes/note/${noteData.id}`);
     } catch (error) {
-      console.error(`JB ERROR: ${error}`);
+      console.error(`UPDATE NOTE ERROR: ${error}`);
     }
+  };
+
+  const handleUpdateTitle = (event: any) => {
+    setNoteData({ ...noteData, title: event.target.value });
   };
 
   const updateNoteText = (event: any) => {
@@ -149,6 +154,20 @@ export default function NoteEditable({ note }: NoteProps): JSX.Element {
                 id="author.email"
                 value={noteData.author.email}
                 onChange={handleUpdateAuthorEmail}
+                className="w-full px-2 py-1 mt-1 text-sm leading-5 text-gray-900 border border-gray-400 shadow-inner"
+                placeholder="john.smith@example.com"
+              />
+            </dd>
+          </div>
+          <div className="sm:col-span-1">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              Title
+            </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900">
+              <input
+                id="title"
+                value={noteData.title}
+                onChange={handleUpdateTitle}
                 className="w-full px-2 py-1 mt-1 text-sm leading-5 text-gray-900 border border-gray-400 shadow-inner"
                 placeholder="john.smith@example.com"
               />

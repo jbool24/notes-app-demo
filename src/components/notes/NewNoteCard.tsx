@@ -20,25 +20,28 @@ export default function NewNoteCard() {
     // validate
     console.table(noteData);
     // submit
-    // try {
-    //   await newNote({
-    //     variables: {
-    //       title: "New Note",
-    //       noteBody: noteData.note_body,
-    //       departmentId: noteData.department.id,
-    //       createdBy: "a8022405-3b56-4ae9-a639-a76f66cd92d4" //user.user_id
-    //     }
-    //   }).then((data: any) => {
-    //     console.log("Recienved data", data);
-    //     router.replace(`/notes/all`);
-    //   });
-    // } catch (error) {
-    //   // rollback on errors
-    //   console.error(`JB ERROR: ${error}`);
-    // }
+    try {
+      await newNote({
+        variables: {
+          title: "New Note",
+          noteBody: noteData.note_body,
+          departmentId: noteData.department.id,
+          createdBy: user.sub
+        }
+      }).then((data: any) => {
+        console.log("Recienved data", data);
+        router.replace(`/notes/all`);
+      });
+    } catch (error) {
+      // rollback on errors
+      console.error(`JB ERROR: ${error}`);
+    }
   };
   const updateNoteText = (event: any) => {
     setNoteData({ ...noteData, note_body: event.target.value });
+  };
+  const handleUpdateTitle = (event: any) => {
+    setNoteData({ ...noteData, title: event.target.value });
   };
   const updateDepartment = (department: Department) => {
     setNoteData({ ...noteData, department: department });
@@ -114,6 +117,20 @@ export default function NewNoteCard() {
                 id="author.email"
                 value={noteData.author.email}
                 onChange={handleUpdateAuthorEmail}
+                className="w-full px-2 py-1 mt-1 text-sm leading-5 text-gray-900 border border-gray-400 shadow-inner"
+                placeholder="john.smith@example.com"
+              />
+            </dd>
+          </div>
+          <div className="sm:col-span-1">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              Title
+            </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900">
+              <input
+                id="title"
+                value={noteData.title}
+                onChange={handleUpdateTitle}
                 className="w-full px-2 py-1 mt-1 text-sm leading-5 text-gray-900 border border-gray-400 shadow-inner"
                 placeholder="john.smith@example.com"
               />
