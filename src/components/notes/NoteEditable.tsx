@@ -115,13 +115,13 @@ export default function NoteEditable({ note }: NoteProps): JSX.Element {
           <div className="flex items-center justify-between">
             <button
               onClick={handleSubmit}
-              className="btn relative inline-flex hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-70"
+              className="btn px-2 w-1/2 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700"
             >
               Save
             </button>
             <button
               onClick={() => router.goBack()}
-              className="btn btn-gray w-1/2 ml-2 hover:bg-gray-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-gray-700"
+              className="btn px-2 btn-gray w-1/2 ml-2 hover:bg-gray-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-gray-700"
             >
               Cancel
             </button>
