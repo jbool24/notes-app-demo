@@ -75,16 +75,16 @@ export default function NewNoteCard() {
               Note details and information.
             </p>
           </div>
-          <div>
+          <div className="flex items-center justify-between">
             <button
               onClick={handleSubmit}
-              className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700"
+              className="btn px-2 w-1/2 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700"
             >
               Save
             </button>
             <button
               onClick={() => router.replace("/notes/all")}
-              className="relative inline-flex items-center mx-2 px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-gray-700"
+              className="btn px-2 btn-gray w-1/2 ml-2 hover:bg-gray-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-gray-700"
             >
               Cancel
             </button>
