@@ -1,24 +1,16 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router-dom";
-
+import { useAuth0 } from "@auth0/auth0-react";
 import { Note, Department, DepartmentsDropdown } from "../notes";
 import { INSERT_NOTE_MUTATION } from "../../common/queries";
 
 export default function NewNoteCard() {
   const router = useHistory();
-  const [noteData, setNoteData] = useState({
-    id: "",
-    title: "New Note",
-    reviewed: false,
-    author: {
-      name: "Jon Doe",
-      email: "email@example.com"
-    },
-    note_body: "",
-    created_at: "",
-    department: { id: "", name: "" }
-  });
+  const { user } = useAuth0();
+  const [noteData, setNoteData] = useState(
+    Note({ author: { name: user.name, email: user.email } })
+  );
 
   const [newNote, { loading: mutationLoading }] = useMutation(
     INSERT_NOTE_MUTATION
