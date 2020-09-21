@@ -20,7 +20,7 @@ export default function DefaultLayout(props: { children: JSX.Element }) {
             }`}
           >
             <button
-              onClick={() => logout({ returnTo: "/" })}
+              onClick={() => logout({ returnTo: window.location.origin })}
               className="flex-shrink-0 font-medium py-1 px-2 rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
             >
               Log out
