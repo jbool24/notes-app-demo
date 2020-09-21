@@ -22,15 +22,21 @@ export interface NoteData {
   reviewed: boolean;
 }
 
-export function Note(data: NoteData) {
+export function Note(data = {}) {
   return {
-    id: "",
+    id: "0",
     title: "New Note",
     reviewed: false,
-    author: {},
+    author: {
+      name: "Jon Doe",
+      email: "email@example.com"
+    },
     note_body: "",
     created_at: "",
-    department: "",
+    department: {
+      id: "40037e36-5206-4a1e-8b57-5eaffee64c0e",
+      name: "Management"
+    },
     ...data
   };
 }
