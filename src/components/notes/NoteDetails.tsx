@@ -15,6 +15,7 @@ export default function NoteDetails(): JSX.Element {
 
   // On Server Fetch Error
   if (error) {
+    console.error(error);
     return <h1 className="w-full text-center"> No note found!</h1>;
   }
 
