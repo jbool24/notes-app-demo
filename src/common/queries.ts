@@ -65,12 +65,22 @@ export const NOTE_BY_ID_QUERY = gql`
 `;
 
 export const UPDATE_NOTE_MUTATION = gql`
-  mutation updateNote($id: uuid!, $noteBody: String, $departmentId: uuid) {
+  mutation updateNote(
+    $id: uuid!
+    $title: String!
+    $noteBody: String
+    $departmentId: uuid
+  ) {
     update_notes_by_pk(
       pk_columns: { id: $id }
-      _set: { note_body: $noteBody, department_id: $departmentId }
+      _set: {
+        title: $title
+        note_body: $noteBody
+        department_id: $departmentId
+      }
     ) {
       id
+      title
       department {
         id
         name
@@ -99,6 +109,11 @@ export const INSERT_NOTE_MUTATION = gql`
       title
       note_body
       created_at
+      author {
+        id
+        user_id
+        name
+      }
       department {
         id
         name
