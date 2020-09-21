@@ -20,7 +20,7 @@ code {
 }
 
 .btn {
-  @apply my-1 px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600;
+  @apply my-1 py-2 border border-transparent text-center text-sm leading-5 font-medium rounded-md text-white bg-indigo-600;
 }
 .btn.btn-gray {
   @apply text-white bg-gray-600;
