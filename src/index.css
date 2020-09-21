@@ -22427,6 +22427,15 @@ code {
   background-color: rgba(113, 128, 150, var(--bg-opacity));
 }
 
+.btn.btn-red {
+  --text-opacity: 1;
+  color: #fff;
+  color: rgba(255, 255, 255, var(--text-opacity));
+  --bg-opacity: 1;
+  background-color: #e53e3e;
+  background-color: rgba(229, 62, 62, var(--bg-opacity));
+}
+
 .btn:disabled {
   cursor: not-allowed;
   align-items: center;
