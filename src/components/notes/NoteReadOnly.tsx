@@ -27,13 +27,13 @@ export default function NoteReadOnly({ note }: NoteProps): JSX.Element {
               disabled={false}
               onClick={() => router.push(`${match.url}/edit`)}
               title={true ? "Edit the note" : "Only the author may update"}
-              className="btn w-1/2 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700"
+              className="btn px-4 w-1/2 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700"
             >
               Edit
             </button>
             <button
               onClick={() => router.replace("/notes/all")}
-              className="btn btn-gray w-1/2 ml-2 hover:bg-gray-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-gray-700"
+              className="btn px-4 btn-gray w-1/2 ml-2 hover:bg-gray-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-gray-700"
             >
               Back
             </button>
