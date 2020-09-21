@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouteMatch, useHistory, Link } from "react-router-dom";
-
+import { useMutation } from "@apollo/client";
+import { useAuth0 } from "@auth0/auth0-react";
+import { REMOVE_NOTE_MUTATION } from "../../common/queries";
 import { NoteData } from "../notes";
 
 interface NoteProps {
@@ -10,6 +12,28 @@ interface NoteProps {
 export default function NoteReadOnly({ note }: NoteProps): JSX.Element {
   const router = useHistory();
   const match = useRouteMatch();
+  const { user } = useAuth0();
+  const [removeNote, { error }] = useMutation(REMOVE_NOTE_MUTATION);
+
+  const userAllowed = user && user.sub && user.sub === note.author.user_id;
+  useEffect(() => {
+    console.log(user);
+    console.log(note);
+  });
+
+  const handleDelete = async () => {
+    try {
+      await removeNote({
+        variables: {
+          id: note.id
+        }
+      });
+      router.replace(`/notes/all`);
+    } catch (error) {
+      console.error(`REMOVE NOTE ERROR: ${error}`);
+    }
+  };
+
   return (
     <div className="bg-white overow-hidden sm:rounded-lg">
       <div className="px-4 py-5 border-b border-gray-200 sm:px-6">
@@ -24,8 +48,10 @@ export default function NoteReadOnly({ note }: NoteProps): JSX.Element {
           </div>
           <div className="flex items-center justify-between">
             <button
-              disabled={false}
-              onClick={() => router.push(`${match.url}/edit`)}
+              disabled={!userAllowed}
+              onClick={() => {
+                router.push(`${match.url}/edit`);
+              }}
               title={true ? "Edit the note" : "Only the author may update"}
               className="btn px-4 w-1/2 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700"
             >
@@ -36,6 +62,25 @@ export default function NoteReadOnly({ note }: NoteProps): JSX.Element {
               className="btn px-4 btn-gray w-1/2 ml-2 hover:bg-gray-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-gray-700"
             >
               Back
+            </button>
+            <button
+              disabled={!userAllowed}
+              onClick={handleDelete}
+              className="btn btn-red p-4 mt-2 ml-2 flex items-center text-sm leading-5 text-gray-400"
+            >
+              <svg
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
             </button>
           </div>
         </div>
