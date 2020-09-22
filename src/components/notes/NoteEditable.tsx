@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  useQuery,
-  useMutation,
-  gql,
-  DataProxy,
-  FetchResult
-} from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import { useHistory } from "react-router-dom";
 
 import { NoteData, Department, DepartmentsDropdown } from "../notes";
@@ -24,10 +18,7 @@ export default function NoteEditable({ note }: NoteProps): JSX.Element {
   const { loading: queryLoading, error: queryError, data } = useQuery(
     ALL_DEPARTMENTS_QUERY
   );
-  const [
-    updateNote,
-    { loading: mutationLoading, error: mutationError }
-  ] = useMutation(UPDATE_NOTE_MUTATION);
+  const [updateNote, { loading }] = useMutation(UPDATE_NOTE_MUTATION);
 
   const DropDown = () => {
     if (queryError) {
@@ -98,7 +89,7 @@ export default function NoteEditable({ note }: NoteProps): JSX.Element {
     });
   };
 
-  return mutationLoading ? (
+  return loading ? (
     <div>Loading...</div>
   ) : (
     <div className="bg-white overflow-hidden sm:rounded-lg">
