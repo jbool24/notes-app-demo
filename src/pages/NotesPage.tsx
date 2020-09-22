@@ -1,14 +1,13 @@
-import * as React from "react";
-import { Switch, Route, useHistory } from "react-router-dom";
-import { useQuery } from "@apollo/client";
+import React from "react";
+import { Switch, Route } from "react-router-dom";
+import { useSubscription } from "@apollo/client";
 
-// import { useSubscription } from "@apollo/react-hooks";
 import { NoteList, NoteDetails, NewNoteCard } from "../components/notes";
 
-import { ALL_NOTES_QUERY, SUBSCRIBE_TO_NOTES } from "../common/queries";
+import { SUBSCRIBE_TO_NOTES } from "../common/queries";
 
 export default function NotesPage() {
-  const { loading, data, error } = useQuery(ALL_NOTES_QUERY);
+  const { loading, data, error } = useSubscription(SUBSCRIBE_TO_NOTES);
 
   if (error) {
     console.error(error.message);
