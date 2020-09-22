@@ -3,7 +3,7 @@ import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Note, Department, DepartmentsDropdown } from "../notes";
-import { INSERT_NOTE_MUTATION } from "../../common/queries";
+import { ALL_NOTES_QUERY, INSERT_NOTE_MUTATION } from "../../common/queries";
 
 export default function NewNoteCard() {
   const router = useHistory();
@@ -23,7 +23,7 @@ export default function NewNoteCard() {
     try {
       await newNote({
         variables: {
-          title: "New Note",
+          title: noteData.title,
           noteBody: noteData.note_body,
           departmentId: noteData.department.id,
           createdBy: user.sub
