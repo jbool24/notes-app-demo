@@ -1,5 +1,5 @@
 ## Description
-This was a project created in roughly 48hrs to demo knowleged of React and supplemental API integration for a client project that used React.
+This was a project created in roughly 48hrs to demo knowlege of React using Hooks API and supplemental backend API integration for a client project that used React. The project front to back was configured and launched together using Heroku to be able deploy within the 48hr timeframe.
 
 The app uses:
 
